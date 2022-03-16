@@ -1,17 +1,26 @@
 import 'package:cvdavioliveira/globals/globals.dart';
 import 'package:flutter/material.dart';
 
-class DrawerScreen extends StatelessWidget {
+class DrawerScreen extends StatefulWidget {
   const DrawerScreen({
     Key? key,
   }) : super(key: key);
 
   @override
+  State<DrawerScreen> createState() => _DrawerScreenState();
+}
+
+class _DrawerScreenState extends State<DrawerScreen> {
+  @override
   Widget build(BuildContext context) {
-    return Drawer(
+    return Container(
+      color: darkColor,
+      width: MediaQuery.of(context).size.width - 20,
       child: Column(
         children: [
-          myInfos(context),
+          const SizedBox(
+            height: 30,
+          ),
           Expanded(
               child: SingleChildScrollView(
             padding: const EdgeInsets.all(defaultPadding),
@@ -42,46 +51,6 @@ class DrawerScreen extends StatelessWidget {
             ),
           ))
         ],
-      ),
-    );
-  }
-
-  Widget myInfos(context) {
-    return AspectRatio(
-      aspectRatio: 1.23,
-      child: Container(
-        color: const Color(0xFF242430),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            const Spacer(
-              flex: 2,
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width * .2,
-              height: MediaQuery.of(context).size.height * .25,
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: Image.asset(
-                    'assets/perfil.jpg',
-                    fit: BoxFit.cover,
-                  )),
-            ),
-            const Spacer(
-              flex: 2,
-            ),
-            Text(
-              'Davi Oliveira Teixeira',
-              style: Theme.of(context).textTheme.subtitle2,
-            ),
-            const Text('Flutter Developer',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.w200, height: 1.5)),
-            const Spacer(
-              flex: 2,
-            ),
-          ],
-        ),
       ),
     );
   }
