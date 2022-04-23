@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1012739580032",
+    "project_id": "meucvirtual",
+    "storage_bucket": "meucvirtual.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1012739580032:android:d120a8ae7f1712b060c665",
+        "android_client_info": {
+          "package_name": "com.example.cvdavioliveira"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1012739580032-7jk0i5g1k4qdo9ru7mkfpugf821373t4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClll67KUN8bt4XDU6yHo5zL5y9TRG4eOw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1012739580032-7jk0i5g1k4qdo9ru7mkfpugf821373t4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

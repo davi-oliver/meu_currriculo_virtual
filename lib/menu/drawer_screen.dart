@@ -1,3 +1,4 @@
+import 'package:components_qt_kit/widgets/ui_kits/kit_buttons.dart';
 import 'package:cvdavioliveira/globals/globals.dart';
 import 'package:flutter/material.dart';
 
@@ -13,9 +14,23 @@ class DrawerScreen extends StatefulWidget {
 class _DrawerScreenState extends State<DrawerScreen> {
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Container(
+      height: double.infinity,
+      color: Colors.white,
+      padding: EdgeInsets.only(top: 70, bottom: 30, left: 10),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: botoesDrawer('Botaoq1', Icons.ac_unit_sharp),
+          ),
+        ],
+      ),
+    );
+    /*Container(
       color: darkColor,
-      width: MediaQuery.of(context).size.width - 20,
+      width: MediaQuery.of(context).size.width * .5,
       child: Column(
         children: [
           const SizedBox(
@@ -52,6 +67,36 @@ class _DrawerScreenState extends State<DrawerScreen> {
           ))
         ],
       ),
+    );*/
+  }
+
+  Widget botoesDrawer(
+    String titulo,
+    icone,
+  ) {
+    final size = MediaQuery.of(context).size;
+    return Row(
+      children: [
+        Expanded(
+          child: KitButton(
+            onTap: () {},
+            paddingButton: EdgeInsets.only(right: 100),
+            marginButton: EdgeInsets.only(right: 40, bottom: 3),
+            height: size.height * .069,
+            decorationButton: BoxDecoration(color: darkColor),
+            widgetCenter: Text(
+              '$titulo',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Raleway',
+                  fontWeight: FontWeight.bold),
+            ),
+            iconPrefix: Icon(icone),
+            spaceItens: 20,
+            mainAxisAlignment: MainAxisAlignment.start,
+          ),
+        ),
+      ],
     );
   }
 }
