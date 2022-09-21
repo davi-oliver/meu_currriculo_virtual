@@ -9,8 +9,7 @@ class TemaMode {
 
   ThemeMode currentTeme = ThemeMode.light;
 
-  void setTema([ThemeMode? theme]) {
-    currentTeme = theme ?? ThemeMode.light;
+  void setTema() {
     globalTheme = currentTeme == ThemeMode.light ? TemaDark() : TemaLigth();
   }
 }

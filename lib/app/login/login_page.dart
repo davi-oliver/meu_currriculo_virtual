@@ -1,10 +1,10 @@
+import 'dart:io';
+
 import 'package:components_qt_kit/components_qt_kit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meu_portifolio/app/controllers/login/login_functions.dart';
 import 'package:meu_portifolio/app/tema/TemaMode.dart';
-import 'package:meu_portifolio/app/tema/temaGlobal.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
@@ -20,32 +20,39 @@ class _LoginPageState extends State<LoginPage> {
     final globalsTheme = Provider.of<TemaMode>(context, listen: true);
     return Scaffold(
       backgroundColor: globalsTheme.globalTheme.backgroundColor,
-      body: Center(
-        child: AnimatedContainer(
-          duration: Duration(seconds: 2),
-          curve: Curves.easeIn,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Titulo('Faça o Login'),
-              Botoes(
-                  FontAwesomeIcons.google,
-                  "Continuar com o Google",
-                  globalsTheme.globalTheme.colorIconGoogle,
-                  globalsTheme.globalTheme.textMedio),
-              Botoes(
-                  FontAwesomeIcons.facebook,
-                  "Continuar com o facebook",
-                  globalsTheme.globalTheme.colorIconFace,
-                  globalsTheme.globalTheme.textMedio),
-              Botoes(
-                  FontAwesomeIcons.invision,
-                  "Continuar em modo visitante",
-                  globalsTheme.globalTheme.colorIcon,
-                  globalsTheme.globalTheme.textMedio),
-            ],
-          ),
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Platform.isWindows
+                ? LoginPageForApplications(
+                    heightBotao: MediaQuery.of(context).size.height * .1,
+                    widthBotao: MediaQuery.of(context).size.width * .5,
+                  )
+                : Platform.isAndroid || Platform.isIOS
+                    ? LoginPageForApplications(
+                        heightBotao: MediaQuery.of(context).size.height * .1,
+                        widthBotao: MediaQuery.of(context).size.width * .85,
+                        heightPerfil: MediaQuery.of(context).size.height * .07,
+                        widthPerfil: MediaQuery.of(context).size.width * .145,
+                      )
+                    : Container(),
+            Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Image.asset(
+                      'assets/lockup_built-w-flutter.png',
+                      height: MediaQuery.of(context).size.height * .08,
+                      fit: BoxFit.cover,
+                    ),
+                  ],
+                ),
+              ),
+            )
+          ],
         ),
       ),
     );
@@ -58,13 +65,135 @@ class Titulo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final globalsThemeVarT = Provider.of<TemaMode>(context, listen: true);
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: Text(
-        this.titulo!,
-        style: Theme.of(context).textTheme.headline5,
+        titulo!,
+        style: TextStyle(
+            color: globalsThemeVarT.globalTheme.textForte,
+            fontSize: 30,
+            fontWeight: FontWeight.w300),
       ),
     );
+  }
+}
+
+// ignore: must_be_immutable
+class LoginPageForApplications extends StatelessWidget {
+  // criar variaveis para aceitar tamanhos para os respectivos layouts
+  double? heightBotao;
+  double? widthBotao;
+  double? widthPerfil;
+  double? heightPerfil;
+
+  LoginPageForApplications(
+      {this.heightBotao,
+      this.widthBotao,
+      this.heightPerfil,
+      this.widthPerfil,
+      Key? key})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final globalsTheme = Provider.of<TemaMode>(context, listen: true);
+
+    return StatefulBuilder(builder: (context, StateSetter setState) {
+      return Column(
+        children: [
+          SizedBox(
+            height: 20,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: IconButton(
+                    onPressed: () {
+                      if (globalsTheme.currentTeme == ThemeMode.dark) {
+                        setState(() {
+                          globalsTheme.currentTeme = ThemeMode.light;
+                          globalsTheme.setTema();
+                        });
+                      } else {
+                        setState(() {
+                          globalsTheme.currentTeme = ThemeMode.dark;
+                          globalsTheme.setTema();
+                        });
+                      }
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (_) => LoginPage()));
+                    },
+                    icon: globalsTheme.currentTeme == ThemeMode.dark
+                        ? Icon(FontAwesomeIcons.solidMoon)
+                        : Icon(
+                            FontAwesomeIcons.solidSun,
+                            color: globalsTheme.globalTheme.textForte,
+                          )),
+              ),
+              Row(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: Image.asset(
+                      'assets/perfil.jpg',
+                      width: widthPerfil,
+                      height: heightPerfil,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                width: 20,
+              ),
+            ],
+          ),
+          Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * .15,
+                ),
+                Titulo(
+                  'Faça sua Autenticação',
+                ),
+                Botoes(
+                  FontAwesomeIcons.google,
+                  "Continuar com o Google",
+                  globalsTheme.globalTheme.colorIconGoogle,
+                  globalsTheme.globalTheme.textMedio,
+                  () async {
+                    await GoogleSingIn().singIn();
+                  },
+                  heightBotao!,
+                  widthBotao!,
+                ),
+                // Botoes(
+                //     FontAwesomeIcons.facebook,
+                //     "Continuar com o facebook",
+                //     globalsTheme.globalTheme.colorIconFace,
+                // globalsTheme.globalTheme.textMedio),
+                Botoes(
+                  FontAwesomeIcons.invision,
+                  "Continuar em modo visitante",
+                  globalsTheme.globalTheme.colorIcon,
+                  globalsTheme.globalTheme.textMedio,
+                  () {},
+                  heightBotao!,
+                  widthBotao!,
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    });
   }
 }
 
@@ -73,8 +202,11 @@ class Botoes extends StatelessWidget {
   IconData? icon;
   var colorIcon;
   var colorText;
-
-  Botoes(this.icon, this.titulo, this.colorIcon, this.colorText);
+  void Function()? ontap;
+  double width;
+  double height;
+  Botoes(this.icon, this.titulo, this.colorIcon, this.colorText, this.ontap,
+      this.height, this.width);
 
   @override
   Widget build(BuildContext context) {
@@ -86,21 +218,15 @@ class Botoes extends StatelessWidget {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 5),
         child: KitButton(
-          width: size.width * .8,
-          height: size.height * .1,
-          onTap: () {
-            setState(() {
-              globalsThemeVar.setTema(ThemeMode.light);
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (_) => LoginPage()));
-            });
-          },
+          width: width,
+          height: height,
+          onTap: ontap!,
           iconPrefix: Icon(
-            this.icon!,
+            icon!,
             color: colorIcon,
-            size: 14,
+            size: 20,
           ),
-          widgetCenter: Text(this.titulo!, style: TextStyle(color: colorText)),
+          widgetCenter: Text(titulo!, style: TextStyle(color: colorText)),
           decorationButton: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               color: globalsThemeVarT.globalTheme.colorButtons,
